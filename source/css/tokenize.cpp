@@ -285,9 +285,11 @@ token_stream tokenize(pos it, pos end)
                     continue;
                 }
             }
-        } else if (auto temp = detail::ident(it, end); temp != it) {
+        }
+        if (auto temp = detail::ident(it, end); temp != it) {
             token_stream.push_back({ it, temp, token_type::ident });
             it = temp;
+            continue;
         }
         throw tokenize_error("unknown symbol, rest ..." + std::string(it, it + 1) + "...");
     }
@@ -323,5 +325,12 @@ std::vector<std::string> to_string(token_type_stream const& type_stream)
     return string_stream;
 }
 
+void dump(std::ostream& stream, token_type_stream type_stream)
+{
+    stream << std::endl;
+    for (auto& s : to_string(type_stream))
+        stream << s << std::endl;
+    stream << std::endl;
+}
 
 }

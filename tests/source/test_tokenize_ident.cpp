@@ -44,4 +44,12 @@ TEST_CASE("suffix can contain escape characters", "[tokenize][detail]")
     REQUIRE(detail::ident(begin, end)==end);
 }
 
+TEST_CASE("test simple ident", "[tokenize][detail]")
+{
+    auto input = std::string(R"(example {)");
+    auto begin = input.data();
+    auto end = input.data() + input.size();
+    REQUIRE(detail::ident(begin, end)==begin + std::string("example").size());
+}
+
 }

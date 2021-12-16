@@ -7,6 +7,7 @@ add_executable(imcss_tests
     "source/test_tokenize_quoted_string.cpp"
     "source/test_tokenize_number.cpp"
     "source/test_tokenize_url.cpp"
+    "source/test_tokenize_random.cpp"
 
 )
 target_link_libraries(imcss_tests  PRIVATE imcss Catch2 Catch2::Catch2WithMain)

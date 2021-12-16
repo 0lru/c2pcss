@@ -62,6 +62,7 @@ using token_content_stream = std::vector<std::string>;
 token_type_stream flatten_by_type(token_stream const&);
 token_content_stream flatten_by_content(token_stream const&);
 std::vector<std::string> to_string(token_type_stream const&);
+void dump(std::ostream&, token_type_stream);
 
 namespace detail {
 
