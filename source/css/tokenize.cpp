@@ -80,9 +80,9 @@ namespace detail {
         return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
-    int look_ahead_and_compare(char const* const points, std::size_t size, pos const begin, pos const end)
+    int look_ahead_and_compare(char const* const points, int size, pos const begin, pos const end)
     {
-        auto remaining = static_cast<std::size_t>(end - begin);
+        auto remaining = static_cast<int>(end - begin);
         if (remaining < size)
             return remaining - size;
         return std::strncmp(points, begin, size);
@@ -314,5 +314,14 @@ token_content_stream flatten_by_content(token_stream const& stream)
         [](auto const& token) { return token.string(); });
     return transformed;
 }
+
+std::vector<std::string> to_string(token_type_stream const& type_stream)
+{
+    auto string_stream = std::vector<std::string>(type_stream.size());
+    std::transform(type_stream.begin(), type_stream.end(), string_stream.begin(),
+        [](auto const token_type) { return to_string(token_type); });
+    return string_stream;
+}
+
 
 }

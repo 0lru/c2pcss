@@ -15,7 +15,8 @@ add_subdirectory(extern/catch2)
 
 add_library(imcss STATIC 
     "source/css/tokenize.cpp"
- )
+    "source/css/token_type.cpp"
+)
 
 target_include_directories(imcss PUBLIC source)
 add_subdirectory(tests)

@@ -1,11 +1,12 @@
 #pragma once
 
+#include "token_type.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cstdint>
 #include <istream>
 #include <stdexcept>
-#include <string>
 #include <string_view>
 #include <vector>
 
@@ -13,54 +14,12 @@ namespace css {
 
 using pos = char const*;
 
-namespace detail {
-
-    pos escape(pos const, pos const);
-    pos escape_with_newline(pos const, pos const);
-    pos ident(pos const, pos const);
-    pos quoted_string(pos const, pos const);
-    pos comment(pos const, pos const);
-    pos number(pos const, pos const);
-    pos url(pos const, pos const);
-
-}
-
 class tokenize_error : std::runtime_error {
 public:
     tokenize_error(std::string const& what)
         : std::runtime_error(what)
     {
     }
-};
-
-enum class token_type {
-    // 1:1 of https://drafts.csswg.org/css-syntax
-    none,
-    ident,
-    function,
-    at_keyword,
-    hash, // something like #aaa
-    quoted_string,
-    bad_string, // ?
-    url,
-    bad_url,
-    delimiter,
-    number,
-    percentage,
-    dimension,
-    whitespace,
-    cdo,
-    cdc,
-    colon,
-    semicolon,
-    comma,
-    minus,
-    square_brackets_left,
-    square_brackets_right,
-    round_brackets_left,
-    round_brackets_right,
-    curly_brackets_left,
-    curly_brackets_right
 };
 
 struct token {
@@ -99,7 +58,21 @@ token_stream tokenize(std::string const&);
 
 using token_type_stream = std::vector<token_type>;
 using token_content_stream = std::vector<std::string>;
+
 token_type_stream flatten_by_type(token_stream const&);
 token_content_stream flatten_by_content(token_stream const&);
+std::vector<std::string> to_string(token_type_stream const&);
+
+namespace detail {
+
+    pos escape(pos const, pos const);
+    pos escape_with_newline(pos const, pos const);
+    pos ident(pos const, pos const);
+    pos quoted_string(pos const, pos const);
+    pos comment(pos const, pos const);
+    pos number(pos const, pos const);
+    pos url(pos const, pos const);
+
+}
 
 }
