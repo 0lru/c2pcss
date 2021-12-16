@@ -27,8 +27,11 @@ namespace detail {
     auto escape_char = '\\';
 
     //
-    // we assume that \r\n is replaced by \n
+    // we assume that \r\n is replaced by \n. furthermode this uses regex and is not
+    // optimized. as an layer of abstraction, the tokenizer does not use them directly
+    // and one may can exchange these regex with handcraftet, more performant algorithms
     namespace expression {
+
         auto const non_ascii = std::string(R"([^\x00-\x7F])");
         auto const escape = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^\n[:xdigit:]]))");
         auto const escape_with_newline = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^[:xdigit:]]))");
@@ -40,7 +43,8 @@ namespace detail {
             + "|" + non_ascii + R"()*)";
         auto const quoted_string = std::string(R"("(?:[^"\n\\]|)" + escape_with_newline + R"()*")");
         auto const comment = std::string(R"(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)");
-
+        auto const number = std::string(R"([-+]?([0-9]+(\.[0-9]+)?|\.[0-9]+)([eE][-+]?[0-9]+)?)");
+        auto const url = std::string(R"(['"]?[^\\\s"'\)\(]*["']?)");
     }
 
     pos escape(pos const it, pos const end)
@@ -78,6 +82,19 @@ namespace detail {
         return std::regex_match(it, m, e) ? it + m[0].length() : it;
     }
 
+    pos number(pos const it, pos const end)
+    {
+        static auto const e = std::regex("^" + expression::number);
+        std::cmatch m;
+        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+    }
+
+    pos url(pos const it, pos const end)
+    {
+        static auto const e = std::regex("^" + expression::url);
+        std::cmatch m;
+        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+    }
 }
 
 /*

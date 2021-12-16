@@ -20,6 +20,8 @@ namespace detail {
     pos ident(pos const, pos const);
     pos quoted_string(pos const, pos const);
     pos comment(pos const, pos const);
+    pos number(pos const, pos const);
+    pos url(pos const, pos const);
 
 }
 
