@@ -1,0 +1,22 @@
+project(css_parser)
+cmake_minimum_required(VERSION 3.5)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(MSVC)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+endif(MSVC)
+
+
+set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
+add_subdirectory(extern/catch2)
+
+add_library(imcss STATIC 
+    "source/css/lex.cpp"
+ )
+
+target_include_directories(imcss PUBLIC source)
+add_subdirectory(tests)
+
