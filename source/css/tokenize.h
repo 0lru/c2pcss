@@ -35,15 +35,16 @@ public:
 
 enum class token_type {
     // 1:1 of https://drafts.csswg.org/css-syntax
+    none,
     ident,
     function,
     at_keyword,
-    hash,
+    hash, // something like #aaa
     quoted_string,
-    bad_string,
+    bad_string, // ?
     url,
     bad_url,
-    delim,
+    delimiter,
     number,
     percentage,
     dimension,
@@ -96,6 +97,9 @@ using token_iterator = token_stream::iterator;
 token_stream tokenize(pos start, pos end);
 token_stream tokenize(std::string const&);
 
-std::vector<token_type> flatten(token_stream const&);
+using token_type_stream = std::vector<token_type>;
+using token_content_stream = std::vector<std::string>;
+token_type_stream flatten_by_type(token_stream const&);
+token_content_stream flatten_by_content(token_stream const&);
 
 }

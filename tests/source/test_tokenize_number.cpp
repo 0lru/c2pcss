@@ -25,7 +25,7 @@ TEST_CASE("number must contain decimal after dot", "[tokenize][detail]")
     auto input = std::string(R"(1.)");
     auto begin = input.data();
     auto end = input.data() + input.size();
-    REQUIRE(detail::number(begin, end)==begin);
+    REQUIRE(detail::number(begin, end)==begin+1);
 }
 
 TEST_CASE("can use capital e", "[tokenize][detail]")

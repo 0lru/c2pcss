@@ -30,4 +30,11 @@ TEST_CASE("escaping newline allowed", "[detail][detail]")
     REQUIRE(detail::escape_with_newline(input.data(), input.data()+input.size()) == input.data());
 }
 
+TEST_CASE("escaping with space", "")
+{
+    auto input = std::string("\\22 33");
+    // +4, because space after 22 will be consumed
+    REQUIRE(detail::escape(input.data(), input.data()+input.size()) == input.data()+4);
+}
+
 }

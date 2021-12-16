@@ -1,26 +1,10 @@
 #include "tokenize.h"
+#include <iostream>
 #include <regex>
 #include <sstream>
 #include <unordered_map>
+
 namespace css {
-
-using tokenizer = void (*)(token_stream&, pos, pos);
-
-/*auto parsing_strategies = std::unordered_map<char, tokenizer> {
-    { '{', token::brace_left }
-};
-
-namespace {
-
-    auto lut = []() {
-        auto lut = std::vector<token::type_t>(256, token::type_t::none);
-        for (auto& [c, type] : lut_definition)
-            lut[c] = type;
-        return lut;
-    }();
-
-}
-*/
 
 namespace detail {
 
@@ -33,8 +17,8 @@ namespace detail {
     namespace expression {
 
         auto const non_ascii = std::string(R"([^\x00-\x7F])");
-        auto const escape = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^\n[:xdigit:]]))");
-        auto const escape_with_newline = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^[:xdigit:]]))");
+        auto const escape = std::string(R"(\\([0-9a-fA-F]{1,6}\s?|[^\n[0-9a-fA-F]))");
+        auto const escape_with_newline = std::string(R"(\\([0-9a-fA-F]{1,6}\s?|[^[0-9a-fA-F]))");
         auto const ident = std::string()
             + R"((?:--|-?(?:[a-zA-Z])"
             + "|" + escape + "|"
@@ -51,137 +35,263 @@ namespace detail {
     {
         static auto const e = std::regex(std::string("^") + expression::escape);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos escape_with_newline(pos const it, pos const end)
     {
         static auto const e = std::regex(std::string("^") + expression::escape_with_newline);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos ident(pos const it, pos const end)
     {
         static auto const e = std::regex(std::string("^") + expression::ident);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos quoted_string(pos const it, pos const end)
     {
         static auto const e = std::regex("^" + expression::quoted_string);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos comment(pos const it, pos const end)
     {
         static auto const e = std::regex("^" + expression::comment);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos number(pos const it, pos const end)
     {
         static auto const e = std::regex("^" + expression::number);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
     pos url(pos const it, pos const end)
     {
         static auto const e = std::regex("^" + expression::url);
         std::cmatch m;
-        return std::regex_match(it, m, e) ? it + m[0].length() : it;
+        return std::regex_search(it, m, e) ? it + m[0].length() : it;
+    }
+
+    int look_ahead_and_compare(char const* const points, std::size_t size, pos const begin, pos const end)
+    {
+        auto remaining = static_cast<std::size_t>(end - begin);
+        if (remaining < size)
+            return remaining - size;
+        return std::strncmp(points, begin, size);
+    }
+
+}
+
+using tokenizer = pos (*)(token_stream&, pos const, pos const);
+
+pos tokenize_string(token_stream& stream, pos const begin, pos const end)
+{
+    if (auto temp = detail::quoted_string(begin, end); temp != begin) {
+        stream.push_back({ begin, temp, token_type::quoted_string });
+        return temp;
+    }
+    return begin;
+}
+
+pos tokenize_number_sign(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    if (auto temp = detail::escape(it, end); it != end && (temp != it || std::isalnum(*it) || *it == '_' || *it == '-')) {
+        if (temp != it)
+            it = temp;
+        else
+            ++it;
+        while (it != end) {
+            if (auto temp = detail::escape(it, end); temp != it)
+                it = temp;
+            else if (std::isalnum(*it) || *it == '_' || *it == '-')
+                ++it;
+            else
+                break;
+        }
+        stream.push_back({ begin, it, token_type::hash });
+    } else {
+        stream.push_back({ begin, it, token_type::delimiter });
+    }
+    return it;
+}
+
+template <token_type t>
+pos tokenize_delimiter(token_stream& stream, pos const begin, pos const)
+{
+    stream.push_back({ begin, begin + 1, t });
+    return begin + 1;
+}
+
+pos tokenize_number(token_stream& stream, pos const begin, pos const end)
+{
+    if (auto temp = detail::number(begin, end); temp != begin) {
+        stream.push_back({ begin, temp, token_type::number });
+        return temp;
+    }
+    return begin;
+}
+
+pos tokenize_whitespace(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    while (it != end && std::isspace(*it))
+        ++it;
+    stream.push_back({ begin, it, token_type::whitespace });
+    return it;
+}
+
+pos tokenize_plus_sign(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    if (std::isdigit(*it)) {
+        if (auto temp = detail::number(begin, end); temp != begin) {
+            stream.push_back({ begin, temp, token_type::number });
+            return temp;
+        }
+    }
+    stream.push_back({ begin, it, token_type::delimiter });
+    return it;
+}
+
+pos tokenize_minus_sign(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    //
+    // first '-' already parsed..
+    if (detail::look_ahead_and_compare("->", 2, it, end) == 0) {
+        stream.push_back({ begin, begin + 3, token_type::cdc });
+        return begin + 3;
+    }
+    //
+    // number.. parse from begin
+    else if (std::isdigit(*it)) {
+        if (auto temp = detail::number(begin, end); temp != begin) {
+            stream.push_back({ begin, temp, token_type::number });
+            return temp;
+        }
+    } else if (auto temp = detail::ident(begin, end); temp != begin) {
+        stream.push_back({ begin, temp, token_type::ident });
+        return temp;
+    }
+    //
+    // assume it = begin + 1
+    stream.push_back({ begin, it, token_type::delimiter });
+    return it;
+}
+
+pos tokenize_full_stop(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    if (std::isdigit(*it)) {
+        if (auto temp = detail::number(begin, end); temp != begin) {
+            stream.push_back({ begin, temp, token_type::number });
+            return temp;
+        }
+    }
+    stream.push_back({ begin, it, token_type::delimiter });
+    return it;
+}
+
+pos tokenize_less_than_sign(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    //
+    // '<' already parsed..
+    if (detail::look_ahead_and_compare("!--", 3, it, end) == 0) {
+        stream.push_back({ begin, it, token_type::cdo });
+        return begin + 4;
+    } else {
+        stream.push_back({ begin, it, token_type::delimiter });
+        return it;
     }
 }
 
-/*
+pos tokenize_commercial_at(token_stream& stream, pos const begin, pos const end)
+{
+    auto it = begin + 1;
+    if (auto temp = detail::ident(it, end); temp != it) {
+        stream.push_back({ begin, temp, token_type::at_keyword });
+        return temp;
+    }
+    stream.push_back({ begin, it, token_type::delimiter });
+    return it;
+}
+
+auto parsing_strategies = std::unordered_map<char, tokenizer> {
+    { '\'', tokenize_string },
+    { '"', tokenize_string },
+    { '#', tokenize_number_sign },
+    { '0', tokenize_number },
+    { '1', tokenize_number },
+    { '2', tokenize_number },
+    { '3', tokenize_number },
+    { '4', tokenize_number },
+    { '5', tokenize_number },
+    { '6', tokenize_number },
+    { '7', tokenize_number },
+    { '8', tokenize_number },
+    { '9', tokenize_number },
+    { '+', tokenize_plus_sign },
+    { '-', tokenize_minus_sign },
+    { '.', tokenize_full_stop },
+    { '<', tokenize_less_than_sign },
+    { '>', tokenize_delimiter<token_type::delimiter> },
+    { '@', tokenize_commercial_at },
+    { ' ', tokenize_whitespace },
+    { '\f', tokenize_whitespace },
+    { '\r', tokenize_whitespace },
+    { '\n', tokenize_whitespace },
+    { '\v', tokenize_whitespace }, // not listed, but added..
+    { '(', tokenize_delimiter<token_type::round_brackets_left> },
+    { ')', tokenize_delimiter<token_type::round_brackets_right> },
+    { '{', tokenize_delimiter<token_type::curly_brackets_left> },
+    { '}', tokenize_delimiter<token_type::curly_brackets_right> },
+    { '[', tokenize_delimiter<token_type::square_brackets_left> },
+    { ']', tokenize_delimiter<token_type::square_brackets_right> },
+    { ',', tokenize_delimiter<token_type::comma> },
+    { ':', tokenize_delimiter<token_type::colon> },
+    { ';', tokenize_delimiter<token_type::semicolon> },
+};
+
 namespace {
 
-    auto lut_definition = std::unordered_map<char, token::type_t> {
-        { '{', token::brace_left },
-        { '}', token::brace_right },
-        { '(', token::round_bracket_left },
-        { ')', token::round_bracket_right },
-        { ':', token::colon },
-        { ';', token::semicolon },
-        { '.', token::point },
-        { '#', token::hash },
-        { ',', token::comma },
-        { '>', token::greater },
-        { '<', token::smaller },
-        { '+', token::plus },
-        { '~', token::tilde },
-        { '@', token::alias },
-        { '%', token::percentage },
-        { '$', token::dollar }, // sass..
-        // whitespace
-        { ' ', token::whitespace },
-        { '\f', token::whitespace },
-        { '\n', token::whitespace },
-        { '\r', token::whitespace },
-        { '\t', token::whitespace },
-        { '\v', token::whitespace }
-    };
-
-    auto lut = []() {
-        auto lut = std::vector<token::type_t>(256, token::type_t::none);
-        for (auto& [c, type] : lut_definition)
-            lut[c] = type;
+    auto strategy_lut = []() {
+        auto lut = std::vector<tokenizer>(256, nullptr);
+        for (auto& [c, s] : parsing_strategies)
+            lut[c] = s;
         return lut;
     }();
 
-    pos comment(pos input)
-    {
-        static auto const e = std::regex(R"(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)");
-        std::cmatch match;
-        if (std::regex_search(input, match, e))
-            return match[0].second;
-        return input;
-    }
-
-    pos sequence(pos input)
-    {
-        const char* ptr = input;
-        while (std::isalpha(static_cast<unsigned char>(*ptr)))
-            ++ptr;
-        if (ptr == input)
-            return input;
-        while (*ptr == '_' 
-            || *ptr == '-' 
-            || std::isalnum(static_cast<unsigned char>(*ptr)))
-            ++ptr;
-        return ptr;
-    }
-
-    pos floating_point(pos input)
-    {
-        static auto const e = std::regex(R"(^[-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)");
-        std::cmatch match;
-        if (std::regex_search(input, match, e))
-            return match[0].second;
-        return input;
-    }
-
 }
-*/
 
 token_stream tokenize(pos it, pos end)
 {
-    token_stream tokens;
-    tokens.reserve(4096);
+    token_stream token_stream;
+    token_stream.reserve(4096);
     while (it != end) {
-        //
-        // '/' consume comment, do not emit token
-        if (auto temp = detail::comment(it, end); temp != it) {
+        if (*it < 256 && *it >= 0) {
+            if (auto strategy = strategy_lut[*it]; strategy != nullptr) {
+                if (auto temp = strategy(token_stream, it, end); temp != it) {
+                    it = temp;
+                    continue;
+                }
+            }
+        } else if (auto temp = detail::ident(it, end); temp != it) {
+            token_stream.push_back({ it, temp, token_type::ident });
             it = temp;
-            continue;
         }
         throw tokenize_error("unknown symbol, rest ..." + std::string(it, it + 1) + "...");
     }
-    return tokens;
+    return token_stream;
 }
 
 std::vector<token> tokenize(std::string const& s)
@@ -189,11 +299,19 @@ std::vector<token> tokenize(std::string const& s)
     return tokenize(s.data(), &s[s.size()]);
 }
 
-std::vector<token_type> flatten(token_stream const& stream)
+token_type_stream flatten_by_type(token_stream const& stream)
 {
-    auto transformed = std::vector<token_type>(stream.size());
+    auto transformed = token_type_stream(stream.size());
     std::transform(stream.begin(), stream.end(), transformed.begin(),
         [](auto const& token) { return token.type; });
+    return transformed;
+}
+
+token_content_stream flatten_by_content(token_stream const& stream)
+{
+    auto transformed = token_content_stream(stream.size());
+    std::transform(stream.begin(), stream.end(), transformed.begin(),
+        [](auto const& token) { return token.string(); });
     return transformed;
 }
 
