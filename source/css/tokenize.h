@@ -13,9 +13,18 @@ namespace css {
 
 using pos = char const*;
 
-class lex_error : std::runtime_error {
+namespace detail {
+
+    pos escape(pos const, pos const);
+    pos escape_with_newline(pos const, pos const);
+    pos ident(pos const, pos const);
+    pos quoted_string(pos const, pos const);
+
+}
+
+class tokenize_error : std::runtime_error {
 public:
-    lex_error(std::string const& what)
+    tokenize_error(std::string const& what)
         : std::runtime_error(what)
     {
     }
@@ -27,7 +36,7 @@ enum class token_type {
     function,
     at_keyword,
     hash,
-    string,
+    quoted_string,
     bad_string,
     url,
     bad_url,
@@ -81,8 +90,8 @@ struct token {
 using token_stream = std::vector<token>;
 using token_iterator = token_stream::iterator;
 
-token_stream lex(pos start, pos end);
-token_stream lex(std::string const&);
+token_stream tokenize(pos start, pos end);
+token_stream tokenize(std::string const&);
 
 std::vector<token_type> flatten(token_stream const&);
 

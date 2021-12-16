@@ -1,18 +1,21 @@
 #include <catch2/catch.hpp>
 
-#include <css/lex.h>
+#include <css/tokenize.h>
 
-namespace css::lexer::test {
+namespace css::test {
 
 namespace {
     auto xy = R"()";
+
+    
 }
 
+/*
 TEST_CASE("consumes comment", "[lexer]")
 {
-    auto input = R"(/* * / ***** */)";
+    auto input = R"(/* * / ***** *)";
     std::vector<css::token> ts;
-    REQUIRE_NOTHROW(ts = lex(input));
+    REQUIRE_NOTHROW(ts = tokenize(input));
     REQUIRE(ts.empty());
 }
 

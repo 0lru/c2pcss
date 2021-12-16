@@ -14,7 +14,7 @@ set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(extern/catch2)
 
 add_library(imcss STATIC 
-    "source/css/lex.cpp"
+    "source/css/tokenize.cpp"
  )
 
 target_include_directories(imcss PUBLIC source)
