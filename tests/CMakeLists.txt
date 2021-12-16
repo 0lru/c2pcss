@@ -1,6 +1,7 @@
 add_executable(imcss_tests 
 
     "source/test_tokenize.cpp"
+    "source/test_tokenize_comment.cpp"
     "source/test_tokenize_ident.cpp"
     "source/test_tokenize_escape.cpp"
     "source/test_tokenize_quoted_string.cpp"

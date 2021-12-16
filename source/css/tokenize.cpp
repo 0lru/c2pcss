@@ -29,17 +29,18 @@ namespace detail {
     //
     // we assume that \r\n is replaced by \n
     namespace expression {
-        auto non_ascii = std::string(R"([^\x00-\x7F])");
-        auto escape = R"((\\[[:xdigit:]]{1,6}\s?|\\[^\n[:xdigit:]]))";
-        auto escape_with_newline = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^[:xdigit:]]))");
-        std::string ident = std::string()
+        auto const non_ascii = std::string(R"([^\x00-\x7F])");
+        auto const escape = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^\n[:xdigit:]]))");
+        auto const escape_with_newline = std::string(R"((\\[[:xdigit:]]{1,6}\s?|\\[^[:xdigit:]]))");
+        auto const ident = std::string()
             + R"((?:--|-?(?:[a-zA-Z])"
-            + "|" + escape + "|" 
-            + non_ascii + 
-            R"())(?:[\w_-])" 
-            + "|" + escape 
+            + "|" + escape + "|"
+            + non_ascii + R"())(?:[\w_-])"
+            + "|" + escape
             + "|" + non_ascii + R"()*)";
-        std::string quoted_string = R"("(?:[^"\n\\]|)" + escape_with_newline + R"()*")";
+        auto const quoted_string = std::string(R"("(?:[^"\n\\]|)" + escape_with_newline + R"()*")");
+        auto const comment = std::string(R"(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)");
+
     }
 
     pos escape(pos const it, pos const end)
@@ -70,13 +71,11 @@ namespace detail {
         return std::regex_match(it, m, e) ? it + m[0].length() : it;
     }
 
-    pos comment(pos input)
+    pos comment(pos const it, pos const end)
     {
-        static auto const e = std::regex(R"(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)");
-        std::cmatch match;
-        if (std::regex_search(input, match, e))
-            return match[0].second;
-        return input;
+        static auto const e = std::regex("^" + expression::comment);
+        std::cmatch m;
+        return std::regex_match(it, m, e) ? it + m[0].length() : it;
     }
 
 }
@@ -159,7 +158,7 @@ token_stream tokenize(pos it, pos end)
     while (it != end) {
         //
         // '/' consume comment, do not emit token
-        if (auto temp = detail::comment(it); temp != it) {
+        if (auto temp = detail::comment(it, end); temp != it) {
             it = temp;
             continue;
         }

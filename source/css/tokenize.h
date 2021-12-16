@@ -19,6 +19,7 @@ namespace detail {
     pos escape_with_newline(pos const, pos const);
     pos ident(pos const, pos const);
     pos quoted_string(pos const, pos const);
+    pos comment(pos const, pos const);
 
 }
 
