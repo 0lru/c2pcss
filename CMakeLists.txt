@@ -12,6 +12,7 @@ endif(MSVC)
 
 set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(extern/catch2)
+add_subdirectory(extern/fmt)
 
 add_library(imcss STATIC
     "source/css/model/color.cpp"
