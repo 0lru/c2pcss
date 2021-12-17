@@ -20,8 +20,10 @@ add_library(imcss STATIC
     "source/css/tokenizer/token_type.cpp"
     "source/css/tokenizer/token_stream.cpp"
     
-    "source/css/parser/rule.cpp"
-)
+    "source/css/parser/parser_rule_set.cpp"
+    "source/css/parser/parser_selector.cpp"
+    "source/css/parser/parser_length.cpp"
+ )
 
 target_include_directories(imcss PUBLIC source)
 add_subdirectory(tests)

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "parser_error.h"
+#include "error.h"
 #include <css/tokenizer/token_stream.h>
 
-namespace css {
+namespace css::parser {
 
-class token_stream_reader {
+class input {
 public:
-    token_stream_reader(token_stream& stream)
+    input(token_stream& stream)
         : _stream(stream)
         , _pos(stream.begin()) {};
 
@@ -44,9 +44,9 @@ public:
     void expect(token_type token_type)
     {
         if (_pos == _stream.end() && token_type != token_type::eof)
-            throw parser_error(_stream.line(), _stream.column(), "expected: " + to_string(token_type) + " got: eof");
+            throw error(_stream.line(), _stream.column(), "expected: " + to_string(token_type) + " got: eof");
         if (_pos->type != token_type)
-            throw parser_error(_pos->line, _pos->column, "expected: " + to_string(token_type) + " got: " + to_string(_pos->type));
+            throw error(_pos->line, _pos->column, "expected: " + to_string(token_type) + " got: " + to_string(_pos->type));
     }
 
     //
@@ -55,7 +55,7 @@ public:
     token const& consume(token_type token_type, bool skip_trailing_whitespace = true)
     {
         if (_pos->type != token_type)
-            throw parser_error(_pos->line, _pos->column, "expected: " + to_string(token_type) + " got: " + to_string(_pos->type));
+            throw error(_pos->line, _pos->column, "expected: " + to_string(token_type) + " got: " + to_string(_pos->type));
         token const& token = *_pos;
         ++_pos;
         if (skip_trailing_whitespace)

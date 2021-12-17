@@ -1,10 +1,10 @@
 #include <stdexcept>
 
-namespace css {
+namespace css::parser {
 
-class parser_error : public std::runtime_error {
+class error : public std::runtime_error {
 public:
-    parser_error(std::size_t line, std::size_t column, std::string const& what)
+    error(std::size_t line, std::size_t column, std::string const& what)
         : std::runtime_error(what)
         , _line(line)
         , _column(column)

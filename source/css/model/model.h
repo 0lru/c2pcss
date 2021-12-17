@@ -7,13 +7,6 @@
 
 namespace css {
 
-//
-// simple typedef to make clear, that our intent is to parse utf8-aware
-using utf8_t = char;
-using pos = utf8_t const*;
-using string = std::string; 
-// using code_point = std::int16_t.. etc.
-
 enum class cascade {
     inherit,
     initial
@@ -49,16 +42,16 @@ enum class combinator {
 };
 
 struct type_selector {
-    string value;
+    std::string value;
 };
 struct hash_selector {
-    string value;
+    std::string value;
 };
 struct class_selector {
-    string value;
+    std::string value;
 };
 struct pseudo_selector {
-    string value;
+    std::string value;
 };
 
 //
@@ -88,5 +81,11 @@ using complex_selector = std::vector<compound_selector>;
 //
 // <selector-list> = <complex-selector-list> = <complex-selector>#
 using selector_list = std::vector<complex_selector>;
+
+// ? 
+struct rule_set {
+    selector_list selector_list;
+    /*declaration block*/
+};
 
 }

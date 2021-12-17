@@ -10,6 +10,13 @@
 
 namespace css {
 
+//
+// simple typedef to make clear, that our intent is to parse utf8-aware
+using utf8_t = char;
+using pos = utf8_t const*;
+using string = std::string;
+// using code_point = std::int16_t.. etc.
+
 struct token {
     token_type type;
 
@@ -45,6 +52,5 @@ struct token {
     template <typename T>
     bool all_of(T&& t) { return std::all_of(begin, end, std::forward<T>(t)); }
 };
-
 
 }
