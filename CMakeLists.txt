@@ -27,5 +27,5 @@ add_library(imcss STATIC
  )
 
 target_include_directories(imcss PUBLIC source)
+target_link_libraries(imcss PUBLIC fmt-header-only)
 add_subdirectory(tests)
-

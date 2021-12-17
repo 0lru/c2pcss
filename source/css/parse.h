@@ -1,5 +1,5 @@
 #include "tokenizer/tokenize.h"
-#include "parser/parser.h"
+#include "parser/context.h"
 #include "model/model.h"
 
 #include <iostream>
@@ -10,8 +10,8 @@ template <typename T>
 void parse(string const& input, T& value)
 {
     auto stream = tokenize(input);
-    parser::input iterator(stream);
-    parser::parser<T>::parse(iterator, value);
+    parser::context context(stream);
+    parser::parser<T>::parse(context, value);
 }
 
 }

@@ -42,15 +42,19 @@ struct token {
 
     // parse number
     template <typename T>
-    void parse(T& value) { std::from_chars(begin, end, value); }
+    void parse(T& value) const { std::from_chars(begin, end, value); }
+
+    // convenience
+    template <typename T>
+    void cast() const { T value; std::from_chars(begin, end, value); return value; }
 
     // parse number
     template <typename T>
-    void parse(T& value, int const base) { std::from_chars(begin, end, value, base); }
+    void parse(T& value, int const base) const { std::from_chars(begin, end, value, base); }
 
     // check if all points are of ..
     template <typename T>
-    bool all_of(T&& t) { return std::all_of(begin, end, std::forward<T>(t)); }
+    bool all_of(T&& t) const { return std::all_of(begin, end, std::forward<T>(t)); }
 };
 
 }

@@ -1,39 +1,40 @@
 #include "parser.h"
+#include "context.h"
 
 namespace css::parser {
 
-void parser<compound_selector>::parse(input& iterator, compound_selector& model)
+void parser<compound_selector>::parse(context& context, compound_selector& model)
 {
-    if (iterator.match_any_of(token_type::ident)) {
-        model.type_selector = type_selector { iterator.consume(token_type::ident, false).string() };
+    if (context.match(token_type::ident)) {
+        model.type_selector = type_selector{ context.peek().string() };
+        context.consume(keep_whitespace);
     }
     while (true) {
-        if (iterator.match_any_of(token_type::hash)) {
-
-            model.hash_selectors.push_back({ iterator.consume(token_type::hash, false).string() });
-
-        } else if (iterator.match_any_of('.')) {
-
-            iterator.consume(token_type::delimiter);
-            model.class_selectors.push_back({ iterator.consume(token_type::ident, false).string() });
-
-        } else if (iterator.match_any_of(':')) {
-
-            iterator.consume(token_type::delimiter);
-            model.pseudo_selectors.push_back({ iterator.consume(token_type::ident, false).string() });
-
+        if (context.match(token_type::hash)) {
+            model.hash_selectors.push_back( hash_selector{context.peek().string() });
+            context.consume(keep_whitespace); // hash
+        } else if (context.match('.')) {
+            context.consume(keep_whitespace); // delimiter
+            context.demand(token_type::ident);
+            model.class_selectors.push_back( class_selector{context.peek().string() });
+            context.consume(keep_whitespace); // ident
+        } else if (context.match(':')) {
+            context.consume(keep_whitespace); // delimiter
+            context.demand(token_type::ident);
+            model.pseudo_selectors.push_back({ context.peek().string() });
+            context.consume(keep_whitespace); // ident
         } else {
             break;
         }
     }
     //
     // lexeme finished
-    iterator.skip_whitespace();
+    context.skip_whitespace();
 }
 
-void parser<complex_selector>::parse(input& iterator, complex_selector& complex)
+void parser<complex_selector>::parse(context& iterator, complex_selector& complex)
 {
-    if (iterator.match_any_of(
+    if (iterator.match(
             token_type::ident, // type selector
             token_type::hash,
             '.', // class
@@ -47,7 +48,7 @@ void parser<complex_selector>::parse(input& iterator, complex_selector& complex)
         parser<compound_selector, void>::parse(iterator, compound);
         complex.push_back(std::move(compound));
     }
-    while (iterator.match_any_of(
+    while (iterator.match(
         token_type::ident, // type selector
         token_type::hash,
         '.', // class
@@ -63,9 +64,9 @@ void parser<complex_selector>::parse(input& iterator, complex_selector& complex)
     }
 }
 
-void parser<selector_list>::parse(input& iterator, selector_list& selector_list)
+void parser<selector_list>::parse(context& iterator, selector_list& selector_list)
 {
-    if (iterator.match_any_of(
+    if (iterator.match(
             token_type::ident, // type selector
             token_type::hash,
             '.', // class
@@ -79,8 +80,8 @@ void parser<selector_list>::parse(input& iterator, selector_list& selector_list)
         parser<complex_selector, void>::parse(iterator, complex);
         selector_list.push_back(std::move(complex));
     }
-    while (iterator.match_any_of(',')) {
-        iterator.consume(token_type::delimiter);
+    while (iterator.match(',')) {
+        iterator.consume(skip_whitespace);
         complex_selector complex;
         parser<complex_selector, void>::parse(iterator, complex);
         selector_list.push_back(std::move(complex));
