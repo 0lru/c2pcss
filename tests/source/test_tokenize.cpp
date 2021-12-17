@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 
-#include <css/tokenize.h>
+#include <css/tokenizer/tokenize.h>
 
 namespace css::test {
 
@@ -37,14 +37,14 @@ TEST_CASE("can parse all kind of deli tokens", "[tokenize]")
     REQUIRE_NOTHROW(token_stream = tokenize(input));
     auto token_types = flatten_by_type(token_stream);
     REQUIRE(token_types == std::vector<token_type> {
-                token_type::round_brackets_left,
-                token_type::round_brackets_right,
-                token_type::curly_brackets_left,
-                token_type::curly_brackets_right,
-                token_type::square_brackets_left,
-                token_type::square_brackets_right,
-                token_type::comma,
-                token_type::colon,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
+                token_type::delimiter,
             });
 }
 
@@ -135,7 +135,23 @@ TEST_CASE("can parse idents inbetween", "[tokenize]")
         token_type::whitespace, 
         token_type::ident,
         token_type::whitespace, 
-        token_type::delimiter 
+        token_type::delimiter
+        });
+}
+
+TEST_CASE("can parse subclass pseudo selector", "[tokenize]")
+{
+    auto input = std::string(R"(abc#a.b:hover)");
+    auto token_stream = tokenize(input);
+    REQUIRE_NOTHROW(token_stream = tokenize(input));
+    auto token_types = flatten_by_type(token_stream);
+    REQUIRE(token_types == token_type_stream { 
+        token_type::ident, 
+        token_type::hash,
+        token_type::delimiter,
+        token_type::ident,
+        token_type::delimiter,
+        token_type::ident
         });
 }
 

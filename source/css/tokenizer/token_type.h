@@ -1,5 +1,6 @@
 #pragma once
 
+#include <css/model/model.h>
 #include <string>
 
 namespace css {
@@ -11,27 +12,18 @@ enum class token_type : std::uint16_t {
     function,
     at_keyword,
     hash, // something like #aaa
+    delimiter,
     quoted_string,
     bad_string, // ?
     url,
     bad_url,
-    delimiter,
     number,
     percentage,
     dimension,
     whitespace,
     cdo,
     cdc,
-    colon,
-    semicolon,
-    comma,
-    minus,
-    square_brackets_left,
-    square_brackets_right,
-    round_brackets_left,
-    round_brackets_right,
-    curly_brackets_left,
-    curly_brackets_right
+    eof // added
 };
 
 std::string const& to_string(token_type const);

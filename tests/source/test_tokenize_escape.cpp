@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 
-#include <css/tokenize.h>
+#include <css/tokenizer/tokenize.h>
 
 namespace css::test {
 

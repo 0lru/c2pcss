@@ -17,23 +17,12 @@ namespace {
         { token_type::bad_string, "bad_string" },
         { token_type::url, "url" },
         { token_type::bad_url, "bad_url" },
-        { token_type::delimiter, "delimiter" },
         { token_type::number, "number" },
         { token_type::percentage, "percentage" },
         { token_type::dimension, "dimension" },
         { token_type::whitespace, "whitespace" },
         { token_type::cdo, "cdo" },
         { token_type::cdc, "cdc" },
-        { token_type::colon, "colon" },
-        { token_type::semicolon, "semicolon" },
-        { token_type::comma, "comma" },
-        { token_type::minus, "minus" },
-        { token_type::square_brackets_left, "square_brackets_left" },
-        { token_type::square_brackets_right, "square_brackets_right" },
-        { token_type::round_brackets_left, "round_brackets_left" },
-        { token_type::round_brackets_right, "round_brackets_right" },
-        { token_type::curly_brackets_left, "curly_brackets_left" },
-        { token_type::curly_brackets_right, "curly_brackets_right" }
     };
 }
 

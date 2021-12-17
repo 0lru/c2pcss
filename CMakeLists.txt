@@ -13,9 +13,14 @@ endif(MSVC)
 set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(extern/catch2)
 
-add_library(imcss STATIC 
-    "source/css/tokenize.cpp"
-    "source/css/token_type.cpp"
+add_library(imcss STATIC
+    "source/css/model/color.cpp"
+
+    "source/css/tokenizer/tokenize.cpp"
+    "source/css/tokenizer/token_type.cpp"
+    "source/css/tokenizer/token_stream.cpp"
+    
+    "source/css/parser/rule.cpp"
 )
 
 target_include_directories(imcss PUBLIC source)
