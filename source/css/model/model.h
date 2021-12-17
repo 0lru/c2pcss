@@ -8,10 +8,11 @@
 namespace css {
 
 //
-// we assume fixed width (1,2,3,4 ... bytes) code points. revise: can we migrate to icu..?
-using code_point = char;
-using pos = code_point const*;
-using string = std::string;
+// simple typedef to make clear, that our intent is to parse utf8-aware
+using utf8_t = char;
+using pos = utf8_t const*;
+using string = std::string; 
+// using code_point = std::int16_t.. etc.
 
 enum class cascade {
     inherit,
@@ -80,12 +81,11 @@ struct compound_selector {
 };
 
 //
-// <compound-selector> [ <combinator>? <compound-selector> ]*
+// <complex-selector> = <compound-selector> [ <combinator>? <compound-selector> ]*
 //
 using complex_selector = std::vector<compound_selector>;
 
 //
-// separated by comma:
 // <selector-list> = <complex-selector-list> = <complex-selector>#
 using selector_list = std::vector<complex_selector>;
 

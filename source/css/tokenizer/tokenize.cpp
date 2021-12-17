@@ -45,7 +45,9 @@ namespace detail {
 
     namespace {
 
-        bool is_non_ascii(code_point c) { return c >= 0x7F; }
+        //
+        // make code_point..
+        bool is_non_ascii(utf8_t c) { return c >= 0x7F; }
 
         pos ident_code_point(pos begin, pos end)
         {
@@ -116,7 +118,7 @@ namespace detail {
         return std::regex_search(it, m, e) ? it + m[0].length() : it;
     }
 
-    int look_ahead_and_compare(code_point const* const points, int size, pos const begin, pos const end)
+    int look_ahead_and_compare(pos const points, int size, pos const begin, pos const end)
     {
         auto remaining = static_cast<int>(end - begin);
         if (remaining < size)
@@ -262,7 +264,7 @@ pos tokenize_commercial_at(token_stream& stream, pos const begin, pos const end)
     return it;
 }
 
-auto parsing_strategies = std::unordered_map<code_point, tokenizer> {
+auto parsing_strategies = std::unordered_map<utf8_t, tokenizer> {
     { '\'', tokenize_string },
     { '"', tokenize_string },
     { '#', tokenize_number_sign },

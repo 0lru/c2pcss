@@ -7,7 +7,7 @@ token_stream::token_stream()
     _tokens.reserve(4096);
 }
 
-void token_stream::push(token_type type, code_point const* begin, code_point const* end)
+void token_stream::push(token_type type, pos begin, pos end)
 {
     _tokens.push_back({ type, begin, end, _line, _column });
     _line += std::count_if(begin, end, [](auto c) { return c == '\n'; }) + 1;

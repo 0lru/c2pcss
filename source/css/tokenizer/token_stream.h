@@ -24,7 +24,7 @@ public:
     std::size_t size() const { return _tokens.size(); }
     std::size_t code_point_count() const { return _code_point_count; }
 
-    void push(token_type type, code_point const* begin, code_point const* end);
+    void push(token_type type, pos begin, pos end);
 
     std::size_t line() const { return _line; }
     std::size_t column() const { return _column; }

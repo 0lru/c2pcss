@@ -20,14 +20,14 @@ public:
     }
 
     template <typename... Args>
-    bool match_any_of(code_point delimiter, Args&&... args)
+    bool match_any_of(utf8_t delimiter, Args&&... args)
     {
         if (_pos == _stream.end())
             return false;
         return delimiter == *_pos->begin || match_any_of(std::forward<Args>(args)...);
     }
 
-    bool match_any_of(code_point delimiter)
+    bool match_any_of(utf8_t delimiter)
     {
         if (_pos == _stream.end())
             return false;
