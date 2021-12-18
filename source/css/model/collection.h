@@ -20,12 +20,12 @@ public:
     {
         using value_t = typename style_definition<style_>::type_t;
         auto item = std::unique_ptr<entry<value_t>>(
-            new entry<value_t>(0, std::move(value)));
+            new entry<value_t>(std::move(value)));
         _ordered.push_back(item.get());
         _map[style_] = std::move(item);
     }
 
-    template<style style_>
+    template <style style_>
     auto get() const -> typename style_definition<style_>::type_t const&
     {
         using value_t = typename style_definition<style_>::type_t;
@@ -39,18 +39,15 @@ public:
 
 private:
     struct entry_ {
-        std::uint16_t position;
     };
     template <typename T>
     struct entry : public entry_ {
-        entry(std::uint16_t position, T&& value)
+        entry(T&& value)
             : value(std::move(value))
         {
-            this->position = position;
         }
         T value;
     };
-    std::uint16_t _position;
     std::vector<entry_*> _ordered;
     std::unordered_map<EnumType, std::unique_ptr<entry_>> _map;
 };
