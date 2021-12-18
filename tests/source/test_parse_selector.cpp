@@ -8,7 +8,7 @@ TEST_CASE("can parse type selector", "[parser][selector]")
     compound_selector compound_selector;
     REQUIRE(parse("abc", compound_selector));
     REQUIRE(compound_selector.type_selector);
-    REQUIRE(compound_selector.type_selector.value() == "abc");
+    REQUIRE(compound_selector.type_selector.value().target == "abc");
 }
 
 TEST_CASE("can parse compound selector", "[parser][selector]")
@@ -16,7 +16,7 @@ TEST_CASE("can parse compound selector", "[parser][selector]")
     compound_selector compound_selector;
     parse("abc#a.b:hover", compound_selector);
     REQUIRE(compound_selector.type_selector);
-    REQUIRE(compound_selector.type_selector.value() == "abc");
+    REQUIRE(compound_selector.type_selector.value().target == "abc");
     REQUIRE(compound_selector.hash_selectors.size() == 1);
     REQUIRE(compound_selector.class_selectors.size() == 1);
     REQUIRE(compound_selector.pseudo_selectors.size() == 1);

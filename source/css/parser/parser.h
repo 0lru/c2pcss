@@ -20,6 +20,7 @@ struct consumer {
 template <typename T, typename = void>
 struct parser : public consumer {
     static bool parse(context&, T&);
+    bool check_precondition(context&) const {}
 };
 
 }
