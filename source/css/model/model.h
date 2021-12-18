@@ -28,8 +28,8 @@ struct percentage : public typed<float> {
 };
 
 using length = std::variant<px, em, rem>;
-
 using length_percentage = std::variant<length, percentage>;
+//using length_percentage = std::variant<px, em, rem, percentage>;
 
 enum class combinator {
     plus, // '+'
@@ -79,5 +79,8 @@ struct rule_set {
     selector_list selector_list;
     /*declaration block*/
 };
+
+template<typename T> struct to_string_ { std::string impl(T const&); };
+template<typename T> std::string to_string(T const& value) { return to_string_::impl(value); }
 
 }

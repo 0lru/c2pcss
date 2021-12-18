@@ -1,5 +1,7 @@
 add_executable(imcss_tests 
 
+    "source/test_collection.cpp"
+ 
     "source/test_tokenize.cpp"
     "source/test_tokenize_comment.cpp"
     "source/test_tokenize_ident.cpp"
@@ -11,8 +13,8 @@ add_executable(imcss_tests
     "source/test_tokenize_error.cpp"
     
     "source/test_parse_selector.cpp"
- 
- )
+    "source/test_parse_rule_set.cpp"
+)
 
 target_link_libraries(imcss_tests  PRIVATE imcss Catch2 Catch2::Catch2WithMain)
 

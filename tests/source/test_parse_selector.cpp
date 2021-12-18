@@ -6,7 +6,7 @@ namespace css::test {
 TEST_CASE("can parse type selector", "[parser][selector]")
 {
     compound_selector compound_selector;
-    parse("abc", compound_selector);
+    REQUIRE(parse("abc", compound_selector));
     REQUIRE(compound_selector.type_selector);
     REQUIRE(compound_selector.type_selector.value() == "abc");
 }

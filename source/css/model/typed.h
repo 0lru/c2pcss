@@ -18,7 +18,7 @@ struct typed {
     operator T&() { return value; }
     operator T const &() const { return value; }
 
-    std::string value;
+    T value;
 };
 
 }

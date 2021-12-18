@@ -79,6 +79,30 @@ public:
         return true;
     }
 
+    //
+    // delimiter version
+    bool demand(char delimiter)
+    {
+        if (_pos->type != token_type::delimiter) {
+            make_error("syntax error: expected delimiter token, got '{}'",
+                to_string(_pos->type));
+            return false;
+        }
+        if (_pos->string_view()[0] != delimiter) {
+            make_error("syntax error: expected '{}' token, got '{}'",
+                delimiter, _pos->string_view());
+            return false;
+        }
+        return true;
+    }
+
+    bool consume(char delimiter, consumer::consumption_tactics consumption_tactics)
+    {
+        auto success = demand(delimiter);
+        consume(consumption_tactics);
+        return success;
+    }
+
     void skip_whitespace()
     {
         while (_pos != _stream.end() && _pos->type == token_type::whitespace)
