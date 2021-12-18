@@ -3,32 +3,39 @@
 
 namespace css::parser {
 
-void parser<px>::parse(context& context, px& px)
+bool parser<px>::parse(context& context, px& px)
 {
-    if (context.peek().string_view() != "px")
+    if (context.peek().string_view() != "px") {
         context.make_error("expected 'px', got '{}'", context.peek().string());
-    else
-        context.consume(skip_whitespace);
+        return false;
+    }
+    context.consume(skip_trailing_whitespace);
+    return true;
 }
 
-void parser<em>::parse(context& context, em& px)
+bool parser<em>::parse(context& context, em& px)
 {
-    if (context.peek().string_view() != "em")
+    if (context.peek().string_view() != "em") {
         context.make_error("expected 'em', got '{}'", context.peek().string());
-    else
-        context.consume(skip_whitespace);
+        return false;
+    }
+    context.consume(skip_trailing_whitespace);
+    return true;
 }
 
-void parser<rem>::parse(context& context, rem& rem)
+bool parser<rem>::parse(context& context, rem& rem)
 {
-    if (context.peek().string_view() != "em")
+    if (context.peek().string_view() != "em") {
         context.make_error("expected 'em', got '{}'", context.peek().string());
-    else
-        context.consume(skip_whitespace);
+        return false;
+    }
+    context.consume(skip_trailing_whitespace);
+    return true;
 }
 
-void parser<length>::parse(context& context, length& length)
+bool parser<length>::parse(context& context, length& length)
 {
+    return false;
 }
 
 }

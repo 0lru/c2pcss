@@ -1,5 +1,7 @@
 #pragma once
+
 #include "color.h"
+#include "typed.h"
 
 #include <optional>
 #include <variant>
@@ -15,20 +17,14 @@ enum class cascade {
 template <typename T>
 using cascadable = std::variant<cascade, T>;
 
-struct px {
-    float value;
+struct px : public typed<float> {
 };
 
-struct em {
-    float value;
+struct em : public typed<float> {
 };
-
-struct rem {
-    float value;
+struct rem : public typed<float> {
 };
-
-struct percentage {
-    float value;
+struct percentage : public typed<float> {
 };
 
 using length = std::variant<px, em, rem>;
@@ -41,17 +37,13 @@ enum class combinator {
     greater, // '>'
 };
 
-struct type_selector {
-    std::string value;
+struct type_selector : public typed<std::string> {
 };
-struct hash_selector {
-    std::string value;
+struct hash_selector : public typed<std::string> {
 };
-struct class_selector {
-    std::string value;
+struct class_selector : public typed<std::string> {
 };
-struct pseudo_selector {
-    std::string value;
+struct pseudo_selector : public typed<std::string> {
 };
 
 //
@@ -60,8 +52,8 @@ struct compound_selector {
     // optional combinator
     std::optional<combinator> combinator;
 
-    // this can also contain the universal selector '*'
-    type_selector type_selector = css::type_selector { "*" };
+    // universal selector '*' is represented as std::nullopt
+    std::optional<type_selector> type_selector;
 
     // example: 'my-item' for '#my-item'
     std::vector<hash_selector> hash_selectors;
@@ -82,7 +74,7 @@ using complex_selector = std::vector<compound_selector>;
 // <selector-list> = <complex-selector-list> = <complex-selector>#
 using selector_list = std::vector<complex_selector>;
 
-// ? 
+// ?
 struct rule_set {
     selector_list selector_list;
     /*declaration block*/

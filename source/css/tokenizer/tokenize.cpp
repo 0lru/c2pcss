@@ -298,6 +298,7 @@ auto parsing_strategies = std::unordered_map<utf8_t, tokenizer> {
     { ',', tokenize_delimiter<token_type::delimiter> },
     { ':', tokenize_delimiter<token_type::delimiter> },
     { ';', tokenize_delimiter<token_type::delimiter> },
+    { '*', tokenize_delimiter<token_type::delimiter> }
 };
 
 namespace {
@@ -329,11 +330,8 @@ token_stream tokenize(pos begin, pos end)
             it = temp;
             continue;
         }
-        auto line = std::count_if(begin, it, [](auto c) { return c == '\n'; }) + 1;
-        auto line_start = string(begin, it - begin - 1).rfind('\n');
-        auto column = line_start == string::npos ? it - begin : (it - begin) - line_start;
-        throw tokenize_error(line, column,
-            "line " + std::to_string(line) + ", col " + std::to_string(column) + ": failed to parse symbol:" + string(it, it + 1));
+        stream.push(token_type::delimiter, it, it + 1);
+        ++it;
     }
     return stream;
 }

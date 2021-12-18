@@ -56,7 +56,7 @@ public:
     {
         token const& token = *_pos;
         ++_pos;
-        if (consumption_tactic == consumer::consumption_tactics::skip_whitespace)
+        if (consumption_tactic == consumer::consumption_tactics::skip_trailing_whitespace)
             skip_whitespace();
     }
 
