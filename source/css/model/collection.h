@@ -9,11 +9,7 @@ namespace css {
 template <typename EnumType>
 class collection {
 public:
-    /*    void set(Style identifier, std::shared_ptr<ComputedStyle const> style)
-        {
-            _set[identifier] = Entry{ std::move(style), _priority++ };
-        }
-        */
+    // TODO: "insert", "erase" etc.
 
     template <style style_>
     void push_back(typename style_definition<style_>::type_t&& value)

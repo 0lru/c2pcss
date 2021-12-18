@@ -19,13 +19,19 @@ using cascadable = std::variant<cascade, T>;
 
 struct px : public typed<float> {
 };
+px operator "" _px(const char* value);
 
 struct em : public typed<float> {
 };
+em operator "" _em(const char* value);
+
 struct rem : public typed<float> {
 };
+rem operator "" _rem(const char* value);
+
 struct percentage : public typed<float> {
 };
+percentage operator "" _percent(const char* value);
 
 using length = std::variant<px, em, rem>;
 using length_percentage = std::variant<length, percentage>;
