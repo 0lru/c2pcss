@@ -75,25 +75,4 @@ struct to_string_<std::variant<Args...>> {
 template <typename T>
 std::string to_string(T const& value) { return to_string_<T>::impl(value); }
 
-/*template<class T>
-typename std::enable_if<std::is_same<decltype(std::to_string(std::declval<T&>())), std::string>::value, std::string>::type to_string(const T &t) {
-    return std::to_string(t);
-}
-
-template<class T>
-typename std::enable_if<std::is_same<decltype(std::declval<const T&>().to_string()), std::string>::value, std::string>::type to_string(const T &t) {
-    return t.to_string();
-}*/
-
-/*
-template<class T>
-typename std::enable_if<std::is_same<decltype(std::declval<const T&>().toString()), std::string>::value, std::string>::type to_string(const T &t) {
-    return t.toString();
-}
-
-template<class T>
-typename std::enable_if<std::is_same<decltype(std::to_string(std::declval<T&>())), std::string>::value, std::string>::type to_string(const T &t) {
-    return std::to_string(t);
-}*/
-
 }
