@@ -14,6 +14,10 @@ TEST_CASE("can parse position", "[parser][selector]")
 
 TEST_CASE("can parse position inside declaration block", "[parser][selector]")
 {
+    declaration_block block;
+    REQUIRE_NOTHROW(parse(R"({ position: absolute })", block));
+    REQUIRE(block.size() == 1);
+    REQUIRE(block.get<style_id::position>() == position::absolute);
 }
 
 

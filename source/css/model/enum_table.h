@@ -21,6 +21,11 @@ public:
     bool contains(std::string const& s) const { return _string_to_type.count(s); }
     bool contains(T const& t) const { return _type_to_string.count(t); }
 
+    using const_iterator = typename std::unordered_map<T, std::string>::const_iterator;
+    const_iterator begin() const { return _type_to_string.begin(); }
+    const_iterator end() const { return _type_to_string.end(); }
+    std::size_t size() const { return _type_to_string.size(); }
+
 private:
     // use bimap?
     std::unordered_map<T, std::string> _type_to_string;

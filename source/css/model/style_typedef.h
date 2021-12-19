@@ -11,6 +11,9 @@ namespace css {
 template<style_id s>
 class style_typedef;
 
+template <> class style_typedef<style_id::position> { public: using type_t = css::position; };
+
+
 /*template <style t>
 class style_definition {
 };*/
