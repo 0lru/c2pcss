@@ -50,4 +50,9 @@ TEST_CASE("can stringify px", "[to_string]")
     REQUIRE(ends_with(s, "px"));
 }
 
+TEST_CASE("stringify preserves structure", "[to_string]")
+{
+    REQUIRE(to_string(12._px) == "12.px");
+}
+
 }
