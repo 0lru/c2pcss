@@ -37,7 +37,7 @@ struct to_string_<T, typename std::enable_if<std::is_same<decltype(std::declval<
 };
 
 //
-// per default stringify the "active" option of a variant
+// per default, stringify the valid option of a variant
 template <std::size_t I>
 using index_t = std::integral_constant<std::size_t, I>;
 
@@ -85,7 +85,6 @@ struct to_string_<std::variant<Args...>> {
 
 //
 // enumerations
-
 template <typename T>
 struct to_string_<T, typename std::enable_if<std::is_enum<T>::value>::type> {
     inline static std::string impl(T const& value)

@@ -1,61 +1,24 @@
 #pragma once
 
-#include "model.h"
+//
+// this maps tyle identifiers, which are enumeration values to their types
+
+#include "style_id.h"
+#include "style_types.h"
 
 namespace css {
 
-enum class style : std::uint16_t {
-    display = 0,
-    box_sizing,
-    position,
+template<style_id s>
+class style_typedef;
 
-    left,
-    top,
-    right,
-    bottom,
+/*template <style t>
+class style_definition {
+};*/
 
-    width,
-    height,
-
-    border_left_width,
-    border_top_width,
-    border_right_width,
-    border_bottom_width,
-
-    margin_left,
-    margin_top,
-    margin_right,
-    margin_bottom,
-
-    padding_left,
-    padding_top,
-    padding_right,
-    padding_bottom,
-
-    font_size,
-    font_family,
-    font_style,
-
-    color,
-    background_color,
-
-    flex_grow,
-    flex_basis,
-    flex_shrink,
-    flex_direction,
-
-    writing_mode,
-    direction
-};
-
-template <style t>
-struct style_definition {
-};
-
-template <>
-struct style_definition<style::left> {
+/*template <>
+class style_definition<style::left> {
     using type_t = css::length_percentage;
-};
+};*/
 
 /*
 template <>

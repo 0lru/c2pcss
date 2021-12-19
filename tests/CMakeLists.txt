@@ -17,6 +17,7 @@ add_executable(imcss_tests
     "source/test_parse_rule_set.cpp"
     "source/test_to_string.cpp"
     "source/test_parse_style_position.cpp"
+    "source/test_parse_style_display.cpp"
 
 )
 

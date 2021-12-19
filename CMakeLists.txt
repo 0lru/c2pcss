@@ -16,6 +16,8 @@ add_subdirectory(extern/fmt)
 
 add_library(imcss STATIC
     "source/css/model/color.cpp"
+    "source/css/model/style_id.cpp"
+    "source/css/model/style_types.cpp"
 
     "source/css/tokenizer/tokenize.cpp"
     "source/css/tokenizer/token_type.cpp"
@@ -24,9 +26,7 @@ add_library(imcss STATIC
     "source/css/parser/parser_rule_set.cpp"
     "source/css/parser/parser_selector.cpp"
     "source/css/parser/parser_length.cpp"
-    "source/css/model/style.cpp"
-    "source/css/model/model.cpp"
-    
+    "source/css/parser/parser_declaration_block.cpp"
 )
 
 target_include_directories(imcss PUBLIC source)

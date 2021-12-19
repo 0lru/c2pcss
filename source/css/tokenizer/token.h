@@ -46,7 +46,12 @@ struct token {
 
     // convenience
     template <typename T>
-    void cast() const { T value; std::from_chars(begin, end, value); return value; }
+    void cast() const
+    {
+        T value;
+        std::from_chars(begin, end, value);
+        return value;
+    }
 
     // parse number
     template <typename T>

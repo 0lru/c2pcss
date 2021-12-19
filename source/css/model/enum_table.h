@@ -33,4 +33,3 @@ template <typename T>
 extern enum_meta<T> enum_table;
 
 }
-

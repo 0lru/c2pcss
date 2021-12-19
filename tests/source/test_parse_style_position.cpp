@@ -12,6 +12,11 @@ TEST_CASE("can parse position", "[parser][selector]")
     REQUIRE(parse<position>("static") == position::static_);
 }
 
+TEST_CASE("can parse position inside declaration block", "[parser][selector]")
+{
+}
+
+
 TEST_CASE("test enum table works in both directions", "")
 {
     REQUIRE(enum_table<position>.contains("absolute"));
