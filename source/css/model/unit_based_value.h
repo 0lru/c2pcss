@@ -4,16 +4,16 @@
 namespace css {
 
 template <typename T, char const* unit_>
-class number_with_unit {
+class unit_based_value {
 public:
-    number_with_unit(std::string const& value)
+    unit_based_value(std::string const& value)
     {
         std::from_chars(value.data(), value.data() + value.size(), _numeric);
         _value = std::move(value);
     }
 
-    bool operator==(number_with_unit const& nwu) const{ return _value == nwu._value; };
-    bool operator!=(number_with_unit const& nwu) const { return _value != nwu._value; };
+    bool operator==(unit_based_value const& nwu) const{ return _value == nwu._value; };
+    bool operator!=(unit_based_value const& nwu) const { return _value != nwu._value; };
 
     T numeric() const { return _numeric; }
     std::string const& value() const { return _value; }

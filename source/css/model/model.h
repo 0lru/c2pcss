@@ -1,7 +1,8 @@
 #pragma once
 
 #include "color.h"
-#include "number_with_unit.h"
+#include "enum_table.h"
+#include "unit_based_value.h"
 
 #include <optional>
 #include <variant>
@@ -21,19 +22,20 @@ const char px_unit_name[3] = "px";
 const char em_unit_name[3] = "em";
 const char rem_unit_name[4] = "rem";
 const char percentage_unit_name[2] = "%";
-struct px : public number_with_unit<float, px_unit_name> {};
 
-struct em : public number_with_unit<float, em_unit_name> {
+struct px : public unit_based_value<float, px_unit_name> {
 };
-struct rem : public number_with_unit<float, rem_unit_name> {
+struct em : public unit_based_value<float, em_unit_name> {
 };
-struct percentage : public number_with_unit<float, percentage_unit_name> {
+struct rem : public unit_based_value<float, rem_unit_name> {
 };
+struct percentage : public unit_based_value<float, percentage_unit_name> {
+};
+
 px operator"" _px(const char* value);
 em operator"" _em(const char* value);
 rem operator"" _rem(const char* value);
 percentage operator"" _percent(const char* value);
-
 
 using length = std::variant<px, em, rem>;
 using length_percentage = std::variant<length, percentage>;
@@ -90,6 +92,12 @@ using selector_list = std::vector<complex_selector>;
 struct rule_set {
     selector_list selector_list;
     /*declaration block*/
+};
+
+enum class position {
+    absolute,
+    static_,
+    // ...
 };
 
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "model.h"
 
 namespace css {
@@ -45,9 +47,6 @@ enum class style : std::uint16_t {
     writing_mode,
     direction
 };
-
-std::string const& to_string(style);
-style to_type(std::string const&);
 
 template <style t>
 struct style_definition {

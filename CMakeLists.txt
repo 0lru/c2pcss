@@ -26,7 +26,6 @@ add_library(imcss STATIC
     "source/css/parser/parser_length.cpp"
     "source/css/model/style.cpp"
     "source/css/model/model.cpp"
-    "source/css/model/to_string.cpp"
     
 )
 

@@ -1,5 +1,10 @@
-#include "model.h"
+#pragma once
+
+#include "enum_table.h"
+
+#include <string>
 #include <type_traits>
+#include <variant>
 
 namespace css {
 
@@ -11,14 +16,8 @@ struct to_string_ {
     }
 };
 
-template <typename T>
-struct to_string_<T, typename std::enable_if<std::is_same<decltype(std::declval<T>().to_string()), std::string>::value>::type> {
-    inline static std::string impl(T const& value)
-    {
-        return value.to_string();
-    }
-};
-
+//
+// id should work in std also.. weird
 template <>
 struct to_string_<std::string> {
     inline static std::string impl(std::string const& value)
@@ -27,6 +26,18 @@ struct to_string_<std::string> {
     }
 };
 
+//
+// support classes that implement a to_string-method
+template <typename T>
+struct to_string_<T, typename std::enable_if<std::is_same<decltype(std::declval<T>().to_string()), std::string>::value>::type> {
+    inline static std::string impl(T const& value)
+    {
+        return value.to_string();
+    }
+};
+
+//
+// per default stringify the "active" option of a variant
 template <std::size_t I>
 using index_t = std::integral_constant<std::size_t, I>;
 
@@ -72,6 +83,27 @@ struct to_string_<std::variant<Args...>> {
     }
 };
 
+//
+// enumerations
+
+template <typename T>
+struct to_string_<T, typename std::enable_if<std::is_enum<T>::value>::type> {
+    inline static std::string impl(T const& value)
+    {
+        return enum_table<T>[value];
+    }
+};
+
+template <typename T>
+struct to_string_<T const, typename std::enable_if<std::is_enum<T>::value>::type> {
+    inline static std::string impl(T const& value)
+    {
+        return enum_table<T>[value];
+    }
+};
+
+//
+// convenience function
 template <typename T>
 std::string to_string(T const& value) { return to_string_<T>::impl(value); }
 

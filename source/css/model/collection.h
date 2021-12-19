@@ -1,4 +1,5 @@
 #include "style.h"
+#include "to_string.h"
 
 #include <memory>
 #include <unordered_map>
