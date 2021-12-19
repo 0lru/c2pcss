@@ -21,7 +21,10 @@ namespace {
     }
 
     auto attribute_parser_list = std::unordered_map<std::string, attribute_parser> {
-        { enum_table<style_id>[style_id::position], make_parser<style_id::position>() }
+        { enum_table<style_id>[style_id::position], make_parser<style_id::position>() },
+        { enum_table<style_id>[style_id::display], make_parser<style_id::display>() },
+        { enum_table<style_id>[style_id::direction], make_parser<style_id::direction>() },
+        { enum_table<style_id>[style_id::box_sizing], make_parser<style_id::box_sizing>() }
     };
 
 }

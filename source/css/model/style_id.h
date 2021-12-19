@@ -5,14 +5,10 @@
 namespace css {
 
 enum class style_id : std::uint16_t {
-    display = 0,
-    box_sizing,
     position,
-
-    left,
-    top,
-    right,
-    bottom,
+    display,
+    direction,
+    box_sizing,
 
     width,
     height,
@@ -21,16 +17,6 @@ enum class style_id : std::uint16_t {
     border_top_width,
     border_right_width,
     border_bottom_width,
-
-    margin_left,
-    margin_top,
-    margin_right,
-    margin_bottom,
-
-    padding_left,
-    padding_top,
-    padding_right,
-    padding_bottom,
 
     font_size,
     font_family,
@@ -44,8 +30,23 @@ enum class style_id : std::uint16_t {
     flex_shrink,
     flex_direction,
 
-    writing_mode,
-    direction
+    // -----
+    left,
+    top,
+    right,
+    bottom,
+
+    margin_left,
+    margin_top,
+    margin_right,
+    margin_bottom,
+
+    padding_left,
+    padding_top,
+    padding_right,
+    padding_bottom,
+
+    writing_mode
 };
 
 /*

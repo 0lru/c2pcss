@@ -16,8 +16,11 @@ add_executable(imcss_tests
     "source/test_parse_selector.cpp"
     "source/test_parse_rule_set.cpp"
     "source/test_to_string.cpp"
+    "source/test_parse_cascaded.cpp"
     "source/test_parse_style_position.cpp"
     "source/test_parse_style_display.cpp"
+    "source/test_parse_style_direction.cpp"
+    "source/test_parse_style_box_sizing.cpp"
 
 )
 

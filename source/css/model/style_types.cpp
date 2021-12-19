@@ -8,18 +8,23 @@ rem operator"" _rem(const char* value) { return rem { value }; }
 percentage operator"" _percent(const char* value) { return percentage { value }; }
 
 template <>
+auto enum_table<cascade> = enum_meta<cascade>({
+
+    { cascade::initial, "initial" },
+    { cascade::inherit, "inherit" },
+    { cascade::unset, "unset" }
+
+});
+
+template <>
 auto enum_table<position> = enum_meta<position>({
 
     { position::static_, "static" },
     { position::relative, "relative" },
     { position::fixed, "fixed" },
     { position::absolute, "absolute" },
-    { position::sticky, "sticky" } });
+    { position::sticky, "sticky" }
 
-template <>
-auto enum_table<direction> = enum_meta<direction>({
-    { direction::rtl, "rtl" },
-    { direction::ltr, "ltr" },
 });
 
 // "("[^_]*)(_) -> $1-
@@ -52,5 +57,12 @@ auto enum_table<display> = enum_meta<display>({
     { display::run_in, "run-in" },
 });
 
+template <>
+auto enum_table<direction> = enum_meta<direction>({ { direction::ltr, "ltr" },
+    { direction::rtl, "rtl" } });
+
+template <>
+auto enum_table<box_sizing> = enum_meta<box_sizing>({ { box_sizing::content_box, "content-box" },
+    { box_sizing::border_box, "border-box" } });
 
 }

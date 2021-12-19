@@ -1,8 +1,8 @@
 #pragma once
 
-#include "collection.h"
-#include "style_typedef.h"
 #include "style_types.h"
+#include "style_typedef.h"
+#include "collection.h"
 
 namespace css {
 

@@ -17,9 +17,10 @@ TEST_CASE("can parse position inside declaration block", "[parser][selector]")
     declaration_block block;
     REQUIRE_NOTHROW(parse(R"({ position: absolute })", block));
     REQUIRE(block.size() == 1);
-    REQUIRE(block.get<style_id::position>() == position::absolute);
+    auto cascaded = block.get<style_id::position>();
+    REQUIRE(std::holds_alternative<position>(cascaded));
+    REQUIRE(std::get<position>(cascaded) == position::absolute);
 }
-
 
 TEST_CASE("test enum table works in both directions", "")
 {

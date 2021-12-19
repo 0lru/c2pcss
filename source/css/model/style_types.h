@@ -127,6 +127,11 @@ enum class direction {
     rtl = 1
 };
 
+enum class box_sizing {
+    content_box = 0,
+    border_box = 1
+};
+
 enum class align_items {
     start = 0,
     center = 1,

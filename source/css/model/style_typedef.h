@@ -11,28 +11,18 @@ namespace css {
 template<style_id s>
 class style_typedef;
 
-template <> class style_typedef<style_id::position> { public: using type_t = css::position; };
+template <> class style_typedef<style_id::position> { public: using type_t = cascaded<css::position>; };
+template <> class style_typedef<style_id::display> { public: using type_t = cascaded<css::display>; };
+template <> class style_typedef<style_id::direction> { public: using type_t = cascaded<css::direction>; };
+template <> class style_typedef<style_id::box_sizing> { public: using type_t = cascaded<css::box_sizing>; };
 
 
-/*template <style t>
-class style_definition {
-};*/
-
-/*template <>
-class style_definition<style::left> {
-    using type_t = css::length_percentage;
-};*/
-
-/*
-template <>
-struct style_definition<style::display> {
-    using type_t = css::display;
-};*/
 /*
     template<style t> struct style_definition{};
     template<> struct style_definition<style::display> { using type = css::display; };
     template<> struct style_definition<style::box_sizing> { using type = css::box_sizing; };
     template<> struct style_definition<style::position> { using type = css::position; };
+    template<> struct style_definition<style::left> { using type = css::length_percentage; };
     template<> struct style_definition<style::top> { using type = css::length_percentage; };
     template<> struct style_definition<style::right> { using type = css::length_percentage; };
     template<> struct style_definition<style::bottom> { using type = css::length_percentage; };
