@@ -18,6 +18,16 @@ using string = std::string;
 // using code_point = std::int16_t.. etc.
 
 struct token {
+
+    token(token_type token_type, pos begin, pos end, std::size_t line, std::size_t column)
+        : type(token_type)
+        , begin(begin)
+        , end(end)
+        , line(line)
+        , column(column)
+    {
+    }
+
     token_type type;
 
     pos begin;
