@@ -16,12 +16,16 @@ const char rem_unit_name[4] = "rem";
 const char percentage_unit_name[2] = "%";
 
 struct px : public unit_based_value<float, px_unit_name> {
+    using unit_based_value::unit_based_value;
 };
 struct em : public unit_based_value<float, em_unit_name> {
+    using unit_based_value::unit_based_value;
 };
 struct rem : public unit_based_value<float, rem_unit_name> {
+    using unit_based_value::unit_based_value;
 };
 struct percentage : public unit_based_value<float, percentage_unit_name> {
+    using unit_based_value::unit_based_value;
 };
 
 px operator"" _px(const char* value);
