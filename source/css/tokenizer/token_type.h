@@ -5,13 +5,13 @@
 
 namespace css {
 
-enum class token_type : std::uint16_t {
+enum token_type : std::uint16_t {
     // 1:1 of https://drafts.csswg.org/css-syntax
     none,
     ident,
     function,
     at_keyword,
-    hash, // something like #aaa
+    hash, // #ff, #zabc, #ffffffff ...
     delimiter,
     quoted_string,
     bad_string, // ?

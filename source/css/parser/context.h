@@ -16,8 +16,9 @@ public:
         : _stream(stream)
         , _pos(stream.begin()) {};
 
+    // look ahead..
     template <typename... Args>
-    bool match(token_type token_type, Args&&... args)
+    bool match(token_type token_type, Args&&... args) const
     {
         if (_pos == _stream.end())
             return false;
@@ -25,28 +26,27 @@ public:
     }
 
     template <typename... Args>
-    bool match(utf8_t delimiter, Args&&... args)
+    bool match(utf8_t delimiter, Args&&... args) const
     {
         if (_pos == _stream.end())
             return false;
         return delimiter == *_pos->begin || match(std::forward<Args>(args)...);
     }
 
-    bool match(utf8_t delimiter)
+    bool match(utf8_t delimiter) const
     {
         if (_pos == _stream.end())
             return false;
         return delimiter == *_pos->begin;
     }
 
-    bool match(token_type token_type)
+    bool match(token_type token_type) const
     {
         if (_pos == _stream.end())
             return false;
         return token_type == _pos->type;
     }
 
-    // token& peek() { return *_pos; }
     token const& peek() const { return *_pos; }
 
     //

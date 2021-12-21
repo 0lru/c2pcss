@@ -14,9 +14,7 @@ struct consumer {
 };
 
 //
-// this is template for parsers. for each typ in "model.h" there should one.
-// a parser may fail. instead of throwing an exception, the parser should report
-// the error to the context and return false instead.
+// we define typed parsers. one for each type
 template <typename T, typename = void>
 struct parser : public consumer {
     static bool parse(context&, T&);

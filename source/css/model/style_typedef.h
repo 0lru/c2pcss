@@ -8,7 +8,7 @@
 
 namespace css {
 
-template<style_id s>
+template<style_id>
 class style_typedef;
 
 template <> class style_typedef<style_id::position> { public: using type_t = cascaded<css::position>; };

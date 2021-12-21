@@ -21,7 +21,6 @@ add_executable(imcss_tests
     "source/test_parse_style_display.cpp"
     "source/test_parse_style_direction.cpp"
     "source/test_parse_style_box_sizing.cpp"
-
 )
 
 target_link_libraries(imcss_tests  PRIVATE imcss Catch2 Catch2::Catch2WithMain)
