@@ -1,17 +1,13 @@
 #pragma once
 
+#include "context.h"
+
 #include <css/model/model.h>
 
 namespace css::parser {
 
 class context;
 
-struct consumer {
-    enum consumption_tactics {
-        skip_trailing_whitespace,
-        keep_trailing_whitespace
-    };
-};
 
 //
 // we define typed parsers. one for each type

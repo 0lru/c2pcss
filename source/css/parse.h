@@ -1,5 +1,6 @@
 #include "tokenizer/tokenize.h"
 #include "parser/context.h"
+#include "parser/parser.h"
 #include "model/model.h"
 
 #include <iostream>

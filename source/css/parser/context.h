@@ -1,7 +1,6 @@
 #pragma once
 
 #include "error.h"
-#include "parser.h"
 #include "warning.h"
 
 #include <css/tokenizer/token_stream.h>
@@ -9,6 +8,13 @@
 #include <fmt/core.h>
 
 namespace css::parser {
+
+struct consumer {
+    enum consumption_tactics {
+        skip_trailing_whitespace,
+        keep_trailing_whitespace
+    };
+};
 
 class context {
 public:
