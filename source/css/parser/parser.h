@@ -8,7 +8,6 @@ namespace css::parser {
 
 class context;
 
-
 //
 // we define typed parsers. one for each type
 template <typename T, typename = void>
@@ -19,7 +18,7 @@ struct parser : public consumer {
 
 template <typename T>
 struct parser<T, typename std::enable_if<std::is_enum<T>::value>::type> : public consumer {
-    static bool has_matching_precondition(context& context) 
+    static bool has_matching_precondition(context& context)
     {
         if (context.peek().type != token_type::ident)
             return false;
@@ -42,7 +41,7 @@ struct parser<T, typename std::enable_if<std::is_enum<T>::value>::type> : public
 
 template <typename T>
 struct parser<cascaded<T>, void> : public consumer {
-    static bool has_matching_precondition(context& context) 
+    static bool has_matching_precondition(context& context)
     {
         if (context.peek().type != token_type::ident)
             return false;
@@ -59,8 +58,7 @@ struct parser<cascaded<T>, void> : public consumer {
         context.demand(token_type::ident);
 
         auto const name = context.peek().string();
-        if (enum_table<cascade>.contains(name))
-        {
+        if (enum_table<cascade>.contains(name)) {
             cascade value;
             if (!parser<cascade>::parse(context, value))
                 return false;
@@ -69,7 +67,7 @@ struct parser<cascaded<T>, void> : public consumer {
         }
 
         T value;
-        if(!parser<T>::parse(context, value))
+        if (!parser<T>::parse(context, value))
             return false;
         cascaded = value;
         return true;

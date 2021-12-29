@@ -90,7 +90,7 @@ enum class cascade {
     unset
 };
 
-enum class position {
+enum class position : std::uint8_t {
     static_,
     relative,
     fixed,
@@ -158,7 +158,24 @@ enum class font_style {
     oblique
 };
 
+using border_style_t = std::uint8_t;
+enum class border_style : border_style_t {
+    dotted,
+    dashed,
+    solid,
+    double_,
+    groove,
+    ridge,
+    inset,
+    outset,
+    none,
+    hidden
+};
+
 template <typename T>
 using cascaded = std::variant<cascade, T>;
+
+// inherited:
+// color, cursor, font*, direction, text*
 
 }

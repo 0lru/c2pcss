@@ -30,13 +30,13 @@ public:
     bool operator==(color const&) const;
 
     std::uint8_t red() const;
-    void set_red(std::uint8_t red) { _red = red; }
+    void set_red(std::uint8_t red) { _value  = (_value & 0x00FFFFFF) | (red << 24); }
     std::uint8_t green() const;
-    void set_green(std::uint8_t green) { _green = green; }
+    void set_green(std::uint8_t green) { _value = (_value & 0xFF00FFFF) | (green << 16); }
     std::uint8_t blue() const;
-    void set_blue(std::uint8_t blue) { _blue = blue; }
+    void set_blue(std::uint8_t blue) { _value = (_value & 0xFFFF00FF) | (blue << 8); }
     std::uint8_t alpha() const;
-    void set_alpha(std::uint8_t alpha) { _alpha = alpha; }
+    void set_alpha(std::uint8_t alpha) { _value = (_value & 0xFFFFFF00) | (alpha << 0); }
 
     struct named;
 
@@ -46,10 +46,7 @@ public:
     static color from_string(std::string const& input);
 
 private:
-    std::uint8_t _red;
-    std::uint8_t _green;
-    std::uint8_t _blue;
-    std::uint8_t _alpha;
+    std::uint32_t _value;
     static std::unordered_map<std::string, color const&> _lut;
 };
 
@@ -89,19 +86,16 @@ inline color color::from_string(std::string const& input)
 }
 
 inline color::color(std::uint32_t rgba)
-    : _red(rgba >> 24 & 0x000000FF)
-    , _green(rgba >> 16 & 0x000000FF)
-    , _blue(rgba >> 8 & 0x000000FF)
-    , _alpha(rgba >> 0 & 0x000000FF)
+    : _value(rgba)
 {
 }
 
 inline color::color(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha)
-    : _red(red)
-    , _green(green)
-    , _blue(blue)
-    , _alpha(alpha)
 {
+    set_red(red);
+    set_green(green);
+    set_blue(blue);
+    set_alpha(alpha);
 }
 
 inline color::color(std::string const& str)
@@ -111,38 +105,32 @@ inline color::color(std::string const& str)
 
 inline color::operator std::uint32_t() const
 {
-    return static_cast<std::uint32_t>(_red) << 24
-        | static_cast<std::uint32_t>(_green) << 16
-        | static_cast<std::uint32_t>(_blue) << 8
-        | static_cast<std::uint32_t>(_alpha);
+    return _value;
 }
 
 inline bool color::operator==(color const& color) const
 {
-    return _red == color._red
-        && _green == color._green
-        && _blue == color._blue
-        && _alpha == color._alpha;
+    return _value == color._value;
 }
 
 inline std::uint8_t color::red() const
 {
-    return _red;
+    return (_value & 0xFF000000) >> 24;
 }
 
 inline std::uint8_t color::green() const
 {
-    return _green;
+    return (_value & 0x00FF0000) >> 16;
 }
 
 inline std::uint8_t color::blue() const
 {
-    return _blue;
+    return (_value & 0x0000FF00) >> 8;
 }
 
 inline std::uint8_t color::alpha() const
 {
-    return _alpha;
+    return _value & 0x000000FF;
 }
 
 struct color::named {

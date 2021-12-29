@@ -58,11 +58,35 @@ auto enum_table<display> = enum_meta<display>({
 });
 
 template <>
-auto enum_table<direction> = enum_meta<direction>({ { direction::ltr, "ltr" },
-    { direction::rtl, "rtl" } });
+auto enum_table<direction> = enum_meta<direction>({
+
+    { direction::ltr, "ltr" },
+    { direction::rtl, "rtl" }
+
+});
 
 template <>
-auto enum_table<box_sizing> = enum_meta<box_sizing>({ { box_sizing::content_box, "content-box" },
-    { box_sizing::border_box, "border-box" } });
+auto enum_table<box_sizing> = enum_meta<box_sizing>({
+
+    { box_sizing::content_box, "content-box" },
+    { box_sizing::border_box, "border-box" } }
+
+);
+
+template <>
+auto enum_table<border_style> = enum_meta<border_style>({
+
+    { border_style::dotted, "dotted" },
+    { border_style::dashed, "dashed" },
+    { border_style::solid, "solid" },
+    { border_style::double_, "double" },
+    { border_style::groove, "groove" },
+    { border_style::ridge, "ridge" },
+    { border_style::inset, "inset" },
+    { border_style::outset, "outset" },
+    { border_style::none, "none" },
+    { border_style::hidden, "hidden" }
+
+});
 
 }

@@ -1,5 +1,6 @@
 add_executable(imcss_tests 
 
+    "source/test_color.cpp"
     "source/test_collection.cpp"
     "source/test_to_string.cpp"
  
